@@ -1,0 +1,43 @@
+﻿@page "/counter"
+@using Radzen.Blazor
+@using RadzenWrapper.Models
+@using RadzenWrapper.Pages.Component
+
+<PageTitle>Counter</PageTitle>
+
+<Gridder Data="List" ShowDetails="true" TItem="Company" TInnerItem="Car" TInnerPropertyName="Cars">
+    <Columns>
+        <RadzenDataGridColumn Width="50px" TItem="Company" Property="Id" Title="Id" Filterable="false"
+            Sortable="false" TextAlign="Radzen.TextAlign.Center" />
+        <RadzenDataGridColumn Width="50px" TItem="Company" Property="Name" Title="Name" Filterable="false"
+                              Sortable="false" TextAlign="Radzen.TextAlign.Center" />
+    </Columns>
+    <Details>
+        <RadzenDataGridColumn Width="50px" TItem="Car" Property="Id" Title="Id" Filterable="false"
+                              Sortable="false" TextAlign="Radzen.TextAlign.Center" />
+        <RadzenDataGridColumn Width="50px" TItem="Car" Property="RegNr" Title="Reg nummer" Filterable="false"
+                              Sortable="false" TextAlign="Radzen.TextAlign.Center" />
+    </Details>
+</Gridder>
+
+@code {
+    private int currentCount = 0;
+    private List<Company>? List { get; set; }
+
+    protected override void OnInitialized()
+    {
+        List = new()
+        {
+            new Company(){ Id = 1, Name = "Pågen", Cars = new()
+            {
+                new Car{ Id = 1, RegNr = "ABC111"},
+                new Car{ Id = 2, RegNr = "ABC123"}
+            } },
+            new Company{ Id = 2, Name = "Östra", Cars = new()
+            {
+                new Car{ Id = 1, RegNr = "xxBC111"},
+                new Car{ Id = 2, RegNr = "xxBC123"}
+            }   }
+        };
+    }
+}

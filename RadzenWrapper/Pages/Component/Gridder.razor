@@ -1,0 +1,78 @@
+﻿@typeparam TItem
+@typeparam TInnerItem
+@using Radzen.Blazor;
+@using Radzen;
+@using RadzenWrapper.Models
+<h3>Gridder</h3>
+@if (ShowDetails)
+{
+    <RadzenDataGrid TItem="TItem" Data="@Data" ExpandMode="DataGridExpandMode.Single"
+                    RowExpand="RowExpand" RowRender="@RowRender">
+        <Template Context="item">
+            <RadzenDataGrid AllowFiltering="true" AllowPaging="true" AllowSorting="true" Data="@GetInnerList(item)"
+                            TItem="TInnerItem">
+                <Columns>
+                    @Details
+                </Columns>
+            </RadzenDataGrid>
+        </Template>
+        <Columns>
+            @Columns
+        </Columns>
+    </RadzenDataGrid>
+}
+else
+{
+    <RadzenDataGrid TItem="TItem" Data="@Data">
+        <Columns>
+            @Columns
+        </Columns>
+    </RadzenDataGrid>
+}
+
+
+@code {
+    [Parameter]
+    public List<TItem>? Data { get; set; } = new();
+    [Parameter]
+    public RenderFragment Columns { get; set; }
+    [Parameter]
+    public RenderFragment Details { get; set; }
+
+    [Parameter]
+    public bool ShowDetails { get; set; }
+    [Parameter]
+    public string TInnerPropertyName { get; set; }
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if(firstRender)
+        {
+            StateHasChanged();
+        }
+    }
+    private IEnumerable<TInnerItem>? GetInnerList(object item)
+    {
+        var propertyInfo = typeof(TItem).GetProperty(TInnerPropertyName);
+        if (propertyInfo != null)
+        {
+            var innerList = propertyInfo.GetValue(item) as IEnumerable<TInnerItem>;
+            return innerList;
+        }
+        return null;
+    }
+
+    void RowExpand(TItem item)
+    {
+
+    }
+
+    void RowRender(RowRenderEventArgs<TItem> args)
+    {
+        args.Expandable = true;
+    }
+
+
+
+
+}
